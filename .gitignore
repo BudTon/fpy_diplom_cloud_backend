@@ -197,4 +197,3 @@ debug/
 !.gitattributes
 !.gitkeep
 !.env.example
-!storage/
