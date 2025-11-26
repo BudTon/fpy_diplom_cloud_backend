@@ -13,6 +13,7 @@ from user.views.auth_views import user_login, RegistrationView
 from user.views.file_views import FileViewSet, StorageViewPatch, download_file_link
 from user.views.user_views import UserViewSet, UserAdmin
 from user.views.storage_views import StorageView
+from user.views.home_views import HomeView
 # , DownloadFileView
 
 
@@ -23,6 +24,7 @@ router.register("files", FileViewSet)
 
 urlpatterns = [
     path("login/", user_login, name="login"),  # Ручная регистрация маршрута
+    path("home/", HomeView.as_view(), name="home"),
     path("register/", RegistrationView.as_view(), name="register"),
     path("storage/", StorageView.as_view(), name="storage"),
     path("storage/<int:pk>", StorageView.as_view(), name="storage_detail"),

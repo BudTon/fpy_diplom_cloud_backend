@@ -1,24 +1,13 @@
-import json
-import mimetypes
-import os
-from django.http import FileResponse, HttpResponse, JsonResponse
-from rest_framework.viewsets import ModelViewSet
-from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
+from django.http import JsonResponse
 from util.generate_download_link import generate_download_link
-from user.serializers import FileSerializer, UserSerializer
+from user.serializers import UserSerializer
 from user.models import File
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.authtoken.models import Token
-from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from django.core.files.storage import default_storage
-from django.utils import timezone
-from django.shortcuts import get_object_or_404
 
 
 class StorageView(APIView):
@@ -53,9 +42,6 @@ class StorageView(APIView):
                     )
             else:
                 target_user = request.user
-
-            # elif not request.user.is_staff:
-            #     target_user = request.user
 
             if target_user is not None:
                 user_files = list(File.objects.filter(user=target_user).values())

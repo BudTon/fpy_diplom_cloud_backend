@@ -50,6 +50,7 @@ def user_login(request):
             {"status": "error", "message": "Invalid credentials."}, status=401
         )
 
+
 class RegistrationView(APIView):
     authentication_classes = []  # Отключаем проверку токена
     permission_classes = []  # Разрешаем всем пользователям регистрироваться
