@@ -135,9 +135,7 @@ DEFAULT_CHARSET = "UTF-8"
 
 STATIC_URL = "static/"
 MEDIA_URL = (os.getenv("MEDIA_URL"))
-print(MEDIA_URL, " - MEDIA_URL")
 MEDIA_ROOT = BASE_DIR / f"{(os.getenv("MEDIA_ROOT"))}"
-print(MEDIA_ROOT, " - MEDIA_ROOT")
 
 # LOGIN_URL = "http://localhost:5173/storage"
 # LOGIN_REDIRECT_URL = "/"
