@@ -59,6 +59,32 @@ class RegistrationView(APIView):
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+
+        usernames = list(User.objects.values_list("username", flat=True))
+        emails = list(User.objects.values_list("email", flat=True))
+        print(usernames)
+        print(emails)
+        print(User.objects.filter(username=username).exists())
+        print(User.objects.filter(email=email).exists())
+
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {
+                    'error_code': 'USERNAME_ALREADY_EXISTS',
+                    'detail': 'Такое имя пользователя уже занято.'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if User.objects.filter(email=email).exists():
+            return Response(
+                {
+                    'error_code': 'EMAIL_ALREADY_EXISTS',
+                    'detail': 'Такой email уже занят.'
+                },
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         try:
             user = User.objects.create_user(
                 username=username,
@@ -69,7 +95,7 @@ class RegistrationView(APIView):
             )
             return Response(
                 {"message": f"Пользователь {user.username} успешно зарегистрирован"},
-                status=status.HTTP_201_CREATED,
+                status=status.HTTP_201_CREATED
             )
         except Exception as error:
             return Response({"error": str(error)}, status=status.HTTP_400_BAD_REQUEST)
