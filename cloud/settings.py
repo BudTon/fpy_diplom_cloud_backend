@@ -87,9 +87,11 @@ WSGI_APPLICATION = "cloud.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("NAME"),
+        "NAME": os.getenv("NAME_PSQL"),
         "USER": os.getenv("USER_PSQL"),
         "PASSWORD": os.getenv("PASSWORD_PSQL"),
+        "HOST": os.getenv("HOST_PSQL"),
+        "PORT": os.getenv("PORT_PSQL"),
     }
 }
 
