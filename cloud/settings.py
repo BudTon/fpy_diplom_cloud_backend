@@ -29,7 +29,15 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", False)
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+# ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+
+ALLOWED_HOSTS = ["*"]
+PORT = int(os.environ.get("PORT", "8000"))
+
+if PORT != 8000:
+    print(f"Serving on port {PORT}")
+else:
+    print("Using default port.")
 
 APPEND_SLASH = False
 
