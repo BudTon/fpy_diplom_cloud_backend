@@ -11,31 +11,15 @@ from rest_framework import status
 
 @csrf_exempt
 def user_login(request):
-    print("-----------------------")
-    print(f"Метод reques: {request.method}")
-    print("-----------------------")
-
     if request.method != "POST":
         return JsonResponse({"error": "Method Not Allowed"}, status=405)
-
-    # Читаем raw body запроса
     body_unicode = request.body.decode("utf-8")
     body_data = json.loads(body_unicode)
-
-    # Достаем username и password
     username = body_data.get("username")
     password = body_data.get("password")
-
-    print("username:", username)
-    print("password:", password)
-
-    # Проверяем аутентификацию
     user = authenticate(request, username=username, password=password)
-    print("user:", user)
-
     if user is not None:
         login(request, user)
-        print(user.id, " - request")
         token, created = Token.objects.get_or_create(user=user)
         return JsonResponse(
             {
@@ -52,8 +36,8 @@ def user_login(request):
 
 
 class RegistrationView(APIView):
-    authentication_classes = []  # Отключаем проверку токена
-    permission_classes = []  # Разрешаем всем пользователям регистрироваться
+    authentication_classes = []
+    permission_classes = []
 
     def post(self, request):
         username = request.data.get("username")
@@ -61,22 +45,6 @@ class RegistrationView(APIView):
         email = request.data.get("email")
         password = request.data.get("password")
         is_staff = request.data.get("is_staff")
-        print(
-            "username: ",
-            username,
-            "\n",
-            "firstname: ",
-            first_name,
-            "\n",
-            "email: ",
-            email,
-            "\n",
-            "password: ",
-            password,
-            "\n",
-            "is_staff: ",
-            is_staff,
-        )
         if not all([username, first_name, email, password]):
             return Response(
                 {
@@ -103,5 +71,5 @@ class RegistrationView(APIView):
                 {"message": f"Пользователь {user.username} успешно зарегистрирован"},
                 status=status.HTTP_201_CREATED,
             )
-        except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        except Exception as error:
+            return Response({"error": str(error)}, status=status.HTTP_400_BAD_REQUEST)

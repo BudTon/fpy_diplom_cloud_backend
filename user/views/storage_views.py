@@ -15,15 +15,6 @@ class StorageView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        print("-------------------------")
-        print("        StorageView        def get(self, request):")
-        print("--------- REQUEST DETAILS ---------")
-        print("METHOD:", request.method)
-        print("QUERY PARAMETERS:", dict(request.GET))
-        print("----------- END OF REQUEST ----------")
-        print(f"Is staff: {request.user.is_staff}")
-        print(f"request.user: {request.user.id}")
-
         user_id = request.query_params.get("user_id", None)
 
         if request.user.is_authenticated:
@@ -57,7 +48,7 @@ class StorageView(APIView):
                     user_data["file_count"] = len(files)
             else:
                 user_serializer = []
-            print("target_user:", target_user.id)
+
             return Response(
                 {
                     "status": "ok",
@@ -68,25 +59,19 @@ class StorageView(APIView):
                     "users": user_serializer,
                 }
             )
+
         else:
             return Response(
                 {"status": "error", "message": "Invalid credentials."}, status=401
             )
 
     def post(self, request):
-        print("-------------------------")
-        print("        StorageView")
-        print("        def post(self, request):")
-        print("--------- REQUEST DETAILS ---------")
-        print("METHOD:", request.method)
-        print("QUERY PARAMETERS:", dict(request.GET))
-        print("QUERY USER:", request.user)
-        print("----------- END OF REQUEST ----------")
-        print(request.data)
+
         if request.method == "POST":
             file_obj = request.FILES.get("file")
             user_storage = request.POST.get("user_storage")
             user = User.objects.get(username=user_storage)
+
             if file_obj:
                 file_name = file_obj.name
                 # file_type = mime_to_extension(file_obj.content_type)
@@ -108,28 +93,13 @@ class StorageView(APIView):
                 return JsonResponse({"message": "Файл успешно загружен!"})
             else:
                 return JsonResponse({"error": "Файл не найден."}, status=400)
+
         return JsonResponse({"error": "Метод не поддерживается."}, status=405)
 
     def delete(self, request, pk=None):
-        """
-        DELETE-запросы для удаления файла по id
-        :param request: объект запроса
-        :param pk: ID файла для удаления
-        """
-        print("-------------------------")
-        print("--------- REQUEST DETAILS ---------")
-        print("METHOD:", request.method)
-        print("QUERY pk:", pk)
-        print("QUERY USER:", request.user)
-        print("----------- END OF REQUEST ----------")
-
         user_id = request.GET.get("user_id")
         target_user = User.objects.get(id=user_id)
         file_id = request.GET.get("file_id")
-
-        print("QUERY user_id:", user_id)
-        print("QUERY file_id:", file_id)
-        print("QUERY target_user:", target_user)
 
         if request.method == "DELETE" and request.user.is_authenticated:
             file_instance = File.objects.get(id=file_id, user=target_user)
@@ -140,43 +110,7 @@ class StorageView(APIView):
             return Response(
                 {"status": "ok", "message": "Файл успешно удален!"}, status=204
             )
+
         return Response(
             {"status": "error", "message": "Метод не поддерживается."}, status=404
         )
-
-
-
-# class DownloadFileView(APIView):
-#     authentication_classes = [TokenAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request, file_id):
-#         print("-------------------------")
-#         print("        DownloadFileView")
-#         print("        def get(self, request, file_id):")
-#         print("--------- REQUEST DETAILS download---------")
-#         print("METHOD:", request.method)
-#         print("QUERY pk:", file_id)
-#         print("QUERY USER:", request.user)
-#         print("----------- END OF REQUEST ----------")
-
-#         try:
-#             file = File.objects.get(pk=file_id)
-#         except File.DoesNotExist:
-#             return Response(
-#                 {"detail": "Файл не найден"}, status=status.HTTP_404_NOT_FOUND
-#             )
-
-#         file_path = file.file.path
-#         content_type, _ = mimetypes.guess_type(file_path)
-#         response = HttpResponse(content_type=content_type)
-#         response["Content-Length"] = os.path.getsize(file_path)
-#         response["Content-Disposition"] = f'attachment; filename="{file.file_name}"'
-
-#         with open(file_path, "rb") as fh:
-#             response.write(fh.read())
-#         print(response, " - response")
-#         file.lastDownloadDate = timezone.now()
-#         file.save()
-#         return response
-

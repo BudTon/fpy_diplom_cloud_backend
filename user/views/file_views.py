@@ -17,15 +17,7 @@ class FileViewSet(ModelViewSet):
 
 
 def download_file_link(request, short_hash, action):
-    print("-----------------------")
-    print("download_file:", f"{request}")
-    print("download_file:", f"{short_hash}")
-    print("action:", action)
-    print("-----------------------")
-
     uploaded_file = get_object_or_404(File, short_hash=short_hash)
-    print("uploaded_file.type:", uploaded_file.type)
-
     if action.lower() == "view":
         disposition = "inline"
         response = FileResponse(
@@ -50,38 +42,17 @@ class StorageViewPatch(APIView):
     permission_classes = [IsAuthenticated]
 
     def patch(self, request, file_id):
-        """
-        PATCH-запрос для изменения метаданных файла
-        :param request: объект запроса
-        :param file_id: ID файла для изменения
-        """
-        print("-------------------------")
-        print("        StorageViewPatch        def patch(self, request, file_id):")
-        print("--------- REQUEST DETAILS !patch!---------")
-        print("METHOD:", request.method)
-        print("QUERY pk:", file_id)
-        print("QUERY USER:", request.user)
-        print("QUERY data:", request.data)
-        print("----------- END OF REQUEST ----------")
-
         try:
             file = File.objects.get(pk=file_id)
         except File.DoesNotExist:
             return Response(
                 {"detail": "Файл не найден"}, status=status.HTTP_404_NOT_FOUND
             )
-
-        # Обновляем метаданные файла
         new_file_name = request.data.get("newFileName", file.file_name)
-        print(new_file_name, " - new_file_name")
         new_comment = request.data.get("newComment", file.comment)
-        print(new_comment, " - newComment")
-
-        # Обновляем файл
         file.file_name = new_file_name
         file.comment = new_comment
         file.save()
-
         return Response(
             {"detail": "Метаданные файла успешно обновлены"}, status=status.HTTP_200_OK
         )
