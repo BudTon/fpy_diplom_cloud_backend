@@ -60,13 +60,6 @@ class RegistrationView(APIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        usernames = list(User.objects.values_list("username", flat=True))
-        emails = list(User.objects.values_list("email", flat=True))
-        print(usernames)
-        print(emails)
-        print(User.objects.filter(username=username).exists())
-        print(User.objects.filter(email=email).exists())
-
         if User.objects.filter(username=username).exists():
             return Response(
                 {
